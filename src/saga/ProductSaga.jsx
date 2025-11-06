@@ -15,11 +15,27 @@ function* Getdata() {
 }
 function* GetSearchData(action) {
   try {
-    const Url = `https://dummyjson.com/products/search?q=${action.data}`;
-    let response = yield fetch(Url);
+    const query = (action.data || '').toString().trim();
+    let response;
+
+    // If query is empty, fetch the full product list (so clearing the search shows all products)
+    if (!query) {
+      response = yield fetch('https://dummyjson.com/products');
+      response = yield response.json();
+      const products = response?.products || [];
+      yield put({ type: SET_PRODUCT_LIST, data: products });
+      return;
+    }
+
+    const Url = `https://dummyjson.com/products/search?q=${encodeURIComponent(
+      query
+    )}`;
+    response = yield fetch(Url);
     response = yield response.json();
     console.log('Search API response', response);
-    yield put({ type: SET_PRODUCT_LIST, data: response });
+    // response contains an object with a `products` array — normalize to products
+    const products = response?.products || [];
+    yield put({ type: SET_PRODUCT_LIST, data: products });
   } catch (error) {
     console.error('Search API failed', error);
   }

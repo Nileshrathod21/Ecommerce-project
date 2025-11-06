@@ -17,105 +17,43 @@ function Header() {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    setQuery(value); // show live value
-    dispatch(ProductSearch(value)); // trigger Redux search
+    setQuery(value);
+    dispatch(ProductSearch(value));
   };
 
   return (
-    <header style={styles.header}>
-      <Link style={styles.navLink} to="/">
-        <div style={styles.logo}>🛍️ SmartStore</div>
+    <header className="app-header app-container">
+      <Link to="/" className="logo">
+        <span aria-hidden>🛍️</span>
+        <span>SmartStore</span>
       </Link>
 
-      <div style={styles.searchContainer}>
+      <div className="search-wrap">
         <input
-          type="text"
+          aria-label="Search products"
+          className="search-input"
           placeholder="Search products..."
-          style={styles.searchInput}
           value={query}
-          onChange={(e) => handleChange(e)}
+          onChange={handleChange}
         />
       </div>
 
-      <nav style={styles.nav}>
-        <Link to="/" style={styles.navLink}>
-          Home
-        </Link>
-        <Link to="/Cart" style={styles.navLink}>
-          Products
-        </Link>
-        <Link to="/about" style={styles.navLink}>
-          About
-        </Link>
+      <nav className="nav" aria-label="Main navigation">
+        <Link to="/">Home</Link>
+        <Link to="/Cart">Products</Link>
+        <Link to="/about">About</Link>
       </nav>
 
-      <div style={styles.cartIconContainer}>
-        <Link to="/Cart">
-          <ShoppingCartIcon style={{ fontSize: 29, color: '#fff' }} />
-          <span style={styles.cartBadge}>{Cartcount}</span>
+      <div>
+        <Link to="/Cart" aria-label={`Cart with ${Cartcount} items`}>
+          <ShoppingCartIcon
+            style={{ fontSize: 26, verticalAlign: 'middle', color: '#fff' }}
+          />
+          <span className="cart-badge">{Cartcount}</span>
         </Link>
       </div>
     </header>
   );
 }
-
-const styles = {
-  header: {
-    backgroundColor: '#1976d2',
-    color: '#fff',
-    padding: '10px 20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'sticky',
-    top: 0,
-    zIndex: 1000,
-    flexWrap: 'wrap', // responsive
-  },
-  logo: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  },
-  nav: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-    marginRight: 30,
-  },
-  navLink: {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: '500',
-    fontSize: '1rem',
-  },
-  searchContainer: {
-    flexGrow: 1,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  searchInput: {
-    width: '100%',
-    maxWidth: '300px',
-    padding: '6px 10px',
-    borderRadius: '4px',
-    border: 'none',
-    fontSize: '1rem',
-  },
-  cartIconContainer: {
-    position: 'relative',
-    cursor: 'pointer',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: -2,
-    right: -6,
-    backgroundColor: '#f44336',
-    color: '#fff',
-    borderRadius: '50%',
-    padding: '2px 5px',
-    fontSize: '0.75rem',
-    fontWeight: 'bold',
-  },
-};
 
 export default Header;

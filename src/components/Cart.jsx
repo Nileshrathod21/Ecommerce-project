@@ -29,8 +29,8 @@ function Cartdata() {
   //     0
   //   );
   return (
-    <>
-      <Box sx={{ padding: 4 }}>
+    <div className="app-container">
+      <Box sx={{ padding: 2 }} className="cart-list">
         <Typography variant="h4" gutterBottom>
           Your Cart
         </Typography>
@@ -38,6 +38,7 @@ function Cartdata() {
         {CartBaseData.map((item) => (
           <Card
             key={item.id}
+            className="cart-item"
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -48,11 +49,19 @@ function Cartdata() {
           >
             <CardMedia
               component="img"
-              image={item?.images}
+              className="cart-thumb"
+              image={
+                item?.thumbnail ||
+                (Array.isArray(item?.images) ? item.images[0] : '') ||
+                '/placeholder.png'
+              }
               alt={'Product Image'}
               sx={{ width: 100, height: 100, objectFit: 'contain', p: 1 }}
+              onError={(e) => {
+                e.currentTarget.src = '/placeholder.png';
+              }}
             />
-            <CardContent sx={{ flex: 1 }}>
+            <CardContent sx={{ flex: 1 }} className="cart-details">
               <Typography variant="h6">{item?.brand}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {item?.returnPolicy}
@@ -61,11 +70,11 @@ function Cartdata() {
                 Total: ₹ {item?.price}
               </Typography>
             </CardContent>
-            <IconButton>
-              <DeleteIcon
-                color="error"
-                onClick={() => dispatch(RemoveToCart(item.id))}
-              />
+            <IconButton
+              aria-label={`Remove ${item?.brand}`}
+              onClick={() => dispatch(RemoveToCart(item.id))}
+            >
+              <DeleteIcon color="error" />
             </IconButton>
           </Card>
         ))}
@@ -74,12 +83,16 @@ function Cartdata() {
           <Typography variant="h6" gutterBottom>
             Grand Total: {Amount}
           </Typography>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            className="btn btn-primary"
+          >
             Proceed to Checkout
           </Button>
         </Box>
       </Box>
-    </>
+    </div>
   );
 }
 

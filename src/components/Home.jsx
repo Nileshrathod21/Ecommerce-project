@@ -8,121 +8,63 @@ import { ProductActionData } from '../services/Action/ProductAction';
 function Home() {
   const dispatch = useDispatch();
   let Product = useSelector((state) => state.reducer.ProductReducerData || []);
-  console.log('Product Data', Product);
 
   useEffect(() => {
     dispatch(ProductActionData());
   }, []);
 
   return (
-    <div style={styles.container}>
-      {Product &&
-        Product.map((item, index) => {
-          return (
-            <div style={styles.card} key={index}>
-              <img style={styles.image} src={item?.images} alt="" />
-              <div style={styles.info}>
-                <h2 style={styles.title}>{item?.brand}</h2>
+    <main className="app-container">
+      <section className="product-grid">
+        {Product &&
+          Product.map((item, index) => (
+            <article className="product-card" key={index}>
+              {/* Use thumbnail if available, otherwise first image in images array, otherwise placeholder */}
+              <img
+                className="product-image"
+                src={
+                  item?.thumbnail ||
+                  (Array.isArray(item?.images) ? item.images[0] : '') ||
+                  '/placeholder.png'
+                }
+                alt={item?.brand || 'product'}
+                onError={(e) => {
+                  // fallback in case image fails to load
+                  e.currentTarget.src = '/placeholder.png';
+                }}
+              />
+              <div className="product-info">
+                <h3 className="product-title">{item?.brand}</h3>
+                <p className="product-desc">{item?.description}</p>
+                <p className="muted">Category: {item?.category}</p>
 
-                <p style={styles.description}>{item?.description}</p>
-                <p style={styles.description}> category: {item?.category}</p>
-                <div style={styles.priceTag}>
-                  <span style={styles.price}> ₹ {item?.price}</span>
-                  <span style={styles.tag}>{item?.availabilityStatus}</span>
+                <div className="price-row">
+                  <div>
+                    <div className="price">₹ {item?.price}</div>
+                    <div className="tag">{item?.availabilityStatus}</div>
+                  </div>
                 </div>
-                <div
-                  style={{ display: 'flex', gap: 2, flexDirection: 'column' }}
-                >
+
+                <div className="btn-row">
                   <button
+                    className="btn btn-primary"
                     onClick={() => dispatch(addToCart(item))}
-                    style={styles.button}
                   >
                     Add to cart 🛒
                   </button>
                   <button
+                    className="btn btn-ghost"
                     onClick={() => dispatch(RemoveToCart(item.id))}
-                    style={styles.button}
                   >
-                    Remove to cart 🛒
+                    Remove
                   </button>
                 </div>
               </div>
-            </div>
-          );
-        })}
-    </div>
+            </article>
+          ))}
+      </section>
+    </main>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '20px',
-    padding: '30px',
-    justifyContent: 'center',
-    backgroundColor: '#f9f9f9',
-    fontFamily: `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
-  },
-  heading: {
-    fontSize: '2.5rem',
-    color: '#333',
-    marginBottom: '40px',
-  },
-  card: {
-    width: '300px',
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
-    padding: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  image: {
-    width: '250px',
-    borderRadius: '8px',
-    objectFit: 'cover',
-  },
-  info: {
-    textAlign: 'left',
-    flex: 1,
-  },
-  title: {
-    fontSize: '1.8rem',
-    marginBottom: '10px',
-    color: '#222',
-  },
-  description: {
-    fontSize: '1rem',
-    marginBottom: '15px',
-    color: '#666',
-  },
-  priceTag: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '20px',
-  },
-  price: {
-    fontSize: '1.6rem',
-    fontWeight: 'bold',
-    color: '#e91e63',
-  },
-  tag: {
-    fontSize: '0.9rem',
-    color: '#388e3c',
-    marginTop: '5px',
-  },
-  button: {
-    padding: '12px 24px',
-    fontSize: '1rem',
-    backgroundColor: '#1976d2',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-  },
-};
 
 export default Home;
